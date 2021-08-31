@@ -1,0 +1,102 @@
+
+Pascal/MT+ GPIO Sound Module For MBC type computers
+
+(C) D. Collins 2021
+
+This is a simple module for driving a transistor assisted passive buzzer module
+with a mbc type computer.  The specific buzzer module this is meant to support 
+is a YL-44 however it should work with its many clones includeing the GPIO 
+games adapter board.  This is all accomplished by rapidly switching a GPIO pin
+on and off to drive a buzzer which produces a tone.  all of this is coded using
+for loops and the port aray for speed.  The results even though written in Pascal 
+are about the same frequency response as a loop coded in assembly language. The 
+module is written without specific timeing in mind so you will have to do your 
+own math to determine how many NOP iterations will produce a given tone / 
+frequency. However in general:
+
+
+FRQ = number of NOP to wait at high & low before re-looping
+
+delaymax = number of iterations which are (FRQ*2 in length)
+
+ 
+You should refrence your specific part's datasheet to prevent from switching it
+too quickly, however i should state, even under the most stress i could put the 
+buzzer, I did not manage it cause it to fail.  Obviously your milage will vary 
+but even then these parts a very inexpensive if there is a issue.
+
+ 
+
+Hooking up the Games Adapter or Buzzer:
+
+You can atatch the signal pin of a YL-44 buzzer module to position 8 of port b 
+to produce sound with this module.  The games adapter should be connectied as 
+follows:
+
+MBC Expansion Port 
+GPIO GAME ADDAPTER CONN. 
+UP = U DOWN = D LEFT = l 
+RIGHT = R FIRE = F 
+555 TRIGGER = TRG (HIGH TRIGGERS) 
+555 EXPIRED = EXP (LOW = EXPIRED
+                   HIGH = RUNNING) 
+PASSIVE BUZZER = SND
+
+VCC    F U D L R   GND 
+ |     | | | | |   | 
++5 1 2 3 4 5 6 7 8 GND 
+ * * * * * * * * * * GPIO PORT A 
+ * * * * * * * * * * GPIO PORT B 
+   |           | | 
+ EXP         TRG SND 
+
+should you chage the position of the buzzer this can effect the operation of
+the timer on the game adapter pay attention to specific connections so that 
+there are not issues.
+
+Symbol Defintion:
+
+SndSetPort - <procedure>
+
+Call this to set up GPIO B for the buzzer for the module to work.  You may 
+notice that this is basically the same port set up for the timer module, This 
+is done for compatiblity.
+
+
+tone (frq : integer,  delaymax:integer) <procedure>
+
+creates a tone from the buzzer the specific tone will depend on your CPU 
+that is driving the module the math is as follows:
+
+FRQ = number of NOP to wait at high & low before re-looping
+delaymax = number of iterations which are (FRQ*2 in length)
+
+I've not done alot of testing at 8mhz to speciffically determine what the 
+tone frequencys are however I can say that the results are very similar 
+between the Z80 and the V20 versions of the board.
+
+ 
+
+MIT License
+
+Copyright (c) 2021 Dave Collins
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+ 
