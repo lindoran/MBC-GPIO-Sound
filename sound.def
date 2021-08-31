@@ -1,0 +1,6 @@
+(* these are the external def's for sound.inc *)
+
+external procedure SndSetPort;
+external procedure tone (frq,delaymax :integer);
+
+
